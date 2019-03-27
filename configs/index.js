@@ -1,0 +1,1 @@
+export const GRAPHQL_URL = 'https://api.graphcms.com/simple/v1/vinylbase';
