@@ -4,17 +4,17 @@ import { ApolloProvider, getDataFromTree } from 'react-apollo';
 import Head from 'next/head';
 import initApollo from './initApollo';
 
-// Gets the display name of a JSX component for dev tools
 function getComponentDisplayName (Component) {
   return Component.displayName || Component.name || 'Unknown';
 }
+
 
 export default ComposedComponent => {
   return class WithData extends Component {
     static displayName = `WithData(${getComponentDisplayName(ComposedComponent)})`;
     static propTypes = {
       serverState: PropTypes.object.isRequired
-    }
+    };
 
     static async getInitialProps (ctx) {
       let serverState = {};
@@ -75,3 +75,4 @@ export default ComposedComponent => {
     }
   }
 }
+

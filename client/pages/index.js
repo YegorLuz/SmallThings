@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
+import { connect } from 'react-redux';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
 import Head from 'next/head';
-import withData from '../lib/withData'
+import withApollo from '../lib/withApollo';
 
 class Home extends Component {
   constructor (props) {
@@ -74,4 +74,4 @@ const allReviews = gql`
     }
   }`;
 
-export default connect(mapStateToProps, mapDispatchToProps)(withData(graphql(allReviews)(Home)));
+export default connect(mapStateToProps, mapDispatchToProps)(withApollo(graphql(allReviews)(Home)));
