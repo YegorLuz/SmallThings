@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
 import Head from 'next/head';
-import withApollo from '../lib/withApollo';
+import { init } from '../actions/home';
+import { formatPrice } from '../utils/formatter';
 
 class Home extends Component {
   constructor (props) {
@@ -15,10 +14,9 @@ class Home extends Component {
     this.onClick = this.onClick.bind(this);
   }
 
-  static async getInitialProps({ req, res }) {
+  static async getInitialProps({ req, store }) {
     const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
-    console.log('req', req);
-    console.log('res', res);
+    store.dispatch(init());
     return { userAgent };
   }
 
@@ -27,9 +25,8 @@ class Home extends Component {
   }
 
   render () {
-    const { userAgent, data = {} } = this.props;
+    const { userAgent, products } = this.props;
     const { clicked } = this.state;
-    const reviews = data.allReviews || [];
 
     console.log(this.props);
 
@@ -42,14 +39,14 @@ class Home extends Component {
         <p onClick={this.onClick}>Welcome to Next.js! - {clicked}</p>
         <p>Hello {userAgent}</p>
         <img src="../assets/images/car.jpg" alt="my image" />
-	<div className='reviews'>
-	  {reviews.map(item => <div key={item.id}>
-	    <p className='blue'>Slug: {item.slug}</p>
-	    <p className='blue'>Rating: {item.rating}</p>
-	    <p className='blue'>Created at: {item.createdAt}</p>
-	    <p className='blue'>Title: {item.title}</p>
-	  </div>)}
-	</div>
+        <ul className='products'>
+          {products.map(item => <li key={item._id}>
+            <p>{item.id}</p>
+            <p>{item.title}</p>
+            <p>{item.description}</p>
+            <p>{formatPrice(item.price)}</p>
+          </li>)}
+        </ul>
       </div>
     );
   }
@@ -57,21 +54,11 @@ class Home extends Component {
 
 const mapStateToProps = store => ({
   test: store.home.test,
+  products: store.home.products,
 });
 
 const mapDispatchToProps = dispatch => ({
-  init: () => null,
+  init: () => dispatch(init()),
 });
 
-const allReviews = gql`
-  query allReviews {
-    allReviews(orderBy: createdAt_DESC) {
-      id
-      slug
-      rating
-      createdAt
-      title
-    }
-  }`;
-
-export default connect(mapStateToProps, mapDispatchToProps)(withApollo(graphql(allReviews)(Home)));
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
