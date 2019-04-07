@@ -3,6 +3,7 @@ const DataBase = require('./db');
 const fetch = require('isomorphic-fetch');
 const cors = require('cors');
 const BodyParser = require('body-parser');
+const colorPalette = require('./data/colorPalette');
 
 if (!global.fetch) {
     global.fetch = fetch;
@@ -15,6 +16,21 @@ server.use(BodyParser.json());
 server.use(BodyParser.urlencoded({ extended: true }));
 
 DataBase.init().catch(err => console.log(err));
+
+server.get('/api/company-info', async (request, response) => {
+    const { customerId = null } = request.body || {};
+    let colors = colorPalette.index;
+    let companyInfo = {
+        name: 'Ukrainian Product Cluster',
+        slogan: 'Шукаю &bull; знаходжу &bull; доставляю',
+        logo: '../../assets/logos/small-things.png',
+    };
+    if (customerId !== null) {
+        colors = colorPalette[customerId];
+    }
+
+    response.send({ colorPalette: colors, companyInfo });
+});
 
 server.get('/api/products', async (request, response) => {
     try {

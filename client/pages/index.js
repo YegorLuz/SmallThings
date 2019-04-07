@@ -1,34 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Head from 'next/head';
-import { init } from '../actions/home';
-import { formatPrice } from '../utils/formatter';
+import Header from '../components/Header';
+import { getCompanyInfo } from '../actions/company';
 
 class Home extends Component {
-  constructor (props) {
-    super(props);
-    this.state = {
-      clicked: 0,
-    };
-
-    this.onClick = this.onClick.bind(this);
-  }
-
   static async getInitialProps({ req, store }) {
-    const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
-    store.dispatch(init());
-    return { userAgent };
-  }
-
-  onClick () {
-    this.setState(state => ({ clicked: state.clicked + 1 }));
+    // const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
+    store.dispatch(getCompanyInfo());
+    return {  };
   }
 
   render () {
-    const { userAgent, products } = this.props;
-    const { clicked } = this.state;
-
-    console.log(this.props);
+    const { colorPalette, companyInfo } = this.props;
 
     return (
       <div>
@@ -36,29 +20,19 @@ class Home extends Component {
           <title>My page title</title>
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         </Head>
-        <p onClick={this.onClick}>Welcome to Next.js! - {clicked}</p>
-        <p>Hello {userAgent}</p>
-        <img src="../assets/images/car.jpg" alt="my image" />
-        <ul className='products'>
-          {products.map(item => <li key={item._id}>
-            <p>{item.id}</p>
-            <p>{item.title}</p>
-            <p>{item.description}</p>
-            <p>{formatPrice(item.price)}</p>
-          </li>)}
-        </ul>
+        <Header colorPalette={colorPalette} companyInfo={companyInfo} />
       </div>
     );
   }
 }
 
 const mapStateToProps = store => ({
-  test: store.home.test,
-  products: store.home.products,
+  colorPalette: store.colorPalette,
+  companyInfo: store.company,
 });
 
 const mapDispatchToProps = dispatch => ({
-  init: () => dispatch(init()),
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
