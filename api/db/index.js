@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 const { DB_URL, DB_PORT, DB_NAME } = require('../config/dbConfig');
+const User = require('../mongoose/user');
 const Product = require('../mongoose/product');
 const Color = require('../mongoose/color');
+const Category = require('../mongoose/category');
+const Page = require('../mongoose/page');
 let db = null;
 let initialized = false;
 
@@ -19,6 +22,20 @@ class DataBase {
         }
     }
 
+
+    /** ----- USERS ----- */
+    static async getUser (_id) {
+        return User.find({ _id });
+    }
+
+    static async getUserByCreds (login, password) {
+        return User.find({ login, password });
+    }
+
+    static async addUser (data) {
+        const user = new User(data);
+        return user.save();
+    }
 
 
     /** ----- PRODUCTS ----- */
@@ -53,6 +70,20 @@ class DataBase {
 
     static async removeColor (id) {
         return Color.findByIdAndDelete(id);
+    }
+
+
+
+    /** CATEGORIES */
+    static async getCategories () {
+        return Category.find();
+    }
+
+
+
+    /** Menu */
+    static async getPages () {
+        return Page.find();
     }
 }
 

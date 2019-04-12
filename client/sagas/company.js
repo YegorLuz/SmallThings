@@ -1,15 +1,16 @@
 import { call, put } from 'redux-saga/effects';
-import axios from 'axios';
-import UrlService from '../services/UrlService';
+import UpcSDK from '../../sdk-core';
 import { saveColorPalette } from '../actions/colorPalette';
 import { saveCompanyInfo } from '../actions/company';
 
 export function* getCompanyInfo () {
     try {
-        const {data} = yield call(axios.get, UrlService.companyInfo());
-        yield put(saveColorPalette(data.colorPalette));
-        yield put(saveCompanyInfo(data.companyInfo));
+        const response = yield call(UpcSDK.getCompanyInfo);
+        if (response) {
+            yield put(saveColorPalette(response.colorPalette));
+            yield put(saveCompanyInfo(response.companyInfo));
+        }
     } catch (error) {
-        console.error('Some shit happend...');
+        console.error('Some shit happened...', error);
     }
 }

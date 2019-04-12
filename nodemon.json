@@ -1,0 +1,5 @@
+{
+    "watch": ["server"],
+    "exec": "node -r esm -r dotenv/config server",
+    "ext": "js"
+}

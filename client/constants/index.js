@@ -4,6 +4,8 @@ export const API_URL = '/api';
 
 export const COMPANY_INFO = 'COMPANY_INFO';
 export const COLOR_PALETTE = 'COLOR_PALETTE';
+export const CATEGORIES = 'CATEGORIES';
+export const MENU = 'MENU';
 
 export const GET = '_GET';
 export const SAVE = '_SAVE';

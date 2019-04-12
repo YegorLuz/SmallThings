@@ -9,7 +9,11 @@ class AppRoot extends App {
 
     let pageProps = {};
     if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
+      try {
+        pageProps = await Component.getInitialProps(ctx);
+      } catch (err) {
+        console.log('_app.js -> AppRoot', err);
+      }
     }
 
     return {
