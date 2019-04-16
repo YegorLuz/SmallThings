@@ -86,8 +86,8 @@ class UpcSDKClient {
     getProducts (payload) {
         const endpoint = this.createFetch({
             url: '/products',
-            method: 'POST',
-            Model: Products,
+            method: 'GET',
+            //Model: Products,
         });
         return endpoint(payload);
     };
@@ -120,7 +120,7 @@ class UpcSDKClient {
         return endpoint(payload);
     }
 
-    getMenu (payload) {
+    getPages (payload) {
         const endpoint = this.createFetch({
             url: `/menu`,
             method: 'GET',

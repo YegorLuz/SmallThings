@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Options = require('../data/options');
 
 const Schema = mongoose.Schema;
 const { ObjectId } = Schema.Types;
@@ -6,10 +7,13 @@ const { ObjectId } = Schema.Types;
 // create a schema
 const productSchema = new Schema({
     _id: ObjectId,
+    _storeProductId: String,
     title: String,
     description: String,
-    color: { type: ObjectId, ref: 'Color' },
     price: Number,
+    options: Options,
+    categoryId: { type: ObjectId, ref: 'Category' },
+    storeId: { type: ObjectId, ref: 'Store' },
 }, { collection: 'Products' });
 
 // we need to create a model using it

@@ -1,33 +1,34 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Head from 'next/head';
 import Header from '../components/Header';
 import Body from '../components/Body';
 import Footer from '../components/Footer';
-import CategoriesMosaic from '../components/CategoriesMosaic';
+import CatalogBody from '../containers/Catalog';
 import { getCompanyInfo } from '../actions/company';
-import { getCategories } from '../actions/category';
+import { getProducts } from '../actions/product';
 
-class Home extends Component {
-    static async getInitialProps({req, store}) {
-        // const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
+class Catalog extends Component {
+    static async getInitialProps({req, store, query}) {
+        console.log(query);
         store.dispatch(getCompanyInfo());
-        store.dispatch(getCategories());
+        store.dispatch(getProducts());
         return {};
     }
 
     render() {
-        const {colorPalette, companyInfo, categories} = this.props;
+        const { colorPalette, companyInfo, products } = this.props;
+        console.log('products', products);
 
         return (
             <div>
                 <Head>
-                    <title>Ukrainian Product Cluster</title>
+                    <title>Catalog</title>
                     <link rel="shortcut icon" type="image/png" href="/assets/icons/favicon.ico"/>
                 </Head>
                 <Header colorPalette={colorPalette} companyInfo={companyInfo}/>
                 <Body className='upc'>
-                    <CategoriesMosaic data={categories}/>
+                    <CatalogBody />
                 </Body>
                 <Footer />
             </div>
@@ -38,9 +39,9 @@ class Home extends Component {
 const mapStateToProps = store => ({
     colorPalette: store.colorPalette,
     companyInfo: store.company,
-    categories: store.category.categories,
+    products: store.product.products,
 });
 
 const mapDispatchToProps = dispatch => ({});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Catalog);

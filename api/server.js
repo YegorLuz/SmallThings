@@ -68,16 +68,23 @@ server.post('*', async (request, response) => {
 });
 
 server.get('/api/products', async (request, response) => {
+    const { id = null, storeId = null, categoryId = null } = (request.data || {});
     try {
-        const products = await DataBase.getProducts();
-        response.send({data: products});
+        const params = {};
+        if (id !== null) params._id = id;
+        if (storeId !== null) params.store = storeId;
+        if (categoryId !== null) params.category = categoryId;
+
+        const products = await DataBase.getProducts(params);
+        response.send({ products });
     } catch (error) {
-        response.status(404).end(error);
+        response.status(404).end({ status: 404, message: 'error' });
     }
 });
 
-server.get('/api/products/:id', async (request, response) => {
-    const id = (request.params || {}).id;
+/*
+server.get('/api/products/', async (request, response) => {
+    const id = (request.data || {}).id;
     try {
         const product = await DataBase.getProduct(id);
         response.send({data: product, id});
@@ -85,6 +92,7 @@ server.get('/api/products/:id', async (request, response) => {
         response.status(200).send(error);
     }
 });
+*/
 
 server.listen(3300, () => {
     console.log('+++Express Server is Running!!!');

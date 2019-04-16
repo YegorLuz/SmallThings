@@ -4,6 +4,7 @@ import colorPalette from './colorPalette';
 import company from './company';
 import category from './category';
 import menu from './menu';
+import product from './product';
 
 export default combineReducers({
   home,
@@ -11,4 +12,5 @@ export default combineReducers({
   company,
   category,
   menu,
+  product,
 });

@@ -6,7 +6,10 @@ const { ObjectId } = Schema.Types;
 // create a schema
 const categorySchema = new Schema({
     _id: ObjectId,
-    name: String,
+    title: String,
+    description: String,
+    icon: String,
+    categoryId: { type: ObjectId, ref: 'Category' },
     img: String,
     order: Number,
     direction: String,

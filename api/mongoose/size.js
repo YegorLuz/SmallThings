@@ -4,13 +4,13 @@ const Schema = mongoose.Schema;
 const { ObjectId } = Schema.Types;
 
 // create a schema
-const colorSchema = new Schema({
+const sizeSchema = new Schema({
     _id: ObjectId,
     value: String,
     name: String,
-}, { collection: 'Colors' });
+}, { collection: 'Sizes' });
 
 // we need to create a model using it
-const Color = mongoose.model('Color', colorSchema, 'Colors');
+const Size = mongoose.model('Size', sizeSchema, 'Sizes');
 
-module.exports = Color;
+module.exports = Size;
