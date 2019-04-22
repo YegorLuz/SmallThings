@@ -4,8 +4,7 @@ import { saveMenu } from '../actions/menu';
 
 export function* getMenu () {
     try {
-        const response = yield call(UpcSDK.getMenu);
-        console.log('saga', response);
+        const response = yield call(UpcSDK.getPages);
         if (response) {
             yield put(saveMenu(response.menu));
         }

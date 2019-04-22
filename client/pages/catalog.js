@@ -13,12 +13,12 @@ class Catalog extends Component {
         console.log(query);
         store.dispatch(getCompanyInfo());
         store.dispatch(getProducts());
-        return {};
+        return { access: (req.body || {}).access || false };
     }
 
     render() {
-        const { colorPalette, companyInfo, products } = this.props;
-        console.log('products', products);
+        const { colorPalette, companyInfo, products, access } = this.props;
+        console.log('products', access, products);
 
         return (
             <div>

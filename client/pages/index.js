@@ -5,19 +5,16 @@ import Header from '../components/Header';
 import Body from '../components/Body';
 import Footer from '../components/Footer';
 import CategoriesMosaic from '../components/CategoriesMosaic';
-import { getCompanyInfo } from '../actions/company';
-import { getCategories } from '../actions/category';
+import { initHomePage } from '../actions/pages';
 
 class Home extends Component {
     static async getInitialProps({req, store}) {
-        // const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
-        store.dispatch(getCompanyInfo());
-        store.dispatch(getCategories());
-        return {};
+        store.dispatch(initHomePage());
+        return { };
     }
 
     render() {
-        const {colorPalette, companyInfo, categories} = this.props;
+        const { categories } = this.props;
 
         return (
             <div>
@@ -25,9 +22,9 @@ class Home extends Component {
                     <title>Ukrainian Product Cluster</title>
                     <link rel="shortcut icon" type="image/png" href="/assets/icons/favicon.ico"/>
                 </Head>
-                <Header colorPalette={colorPalette} companyInfo={companyInfo}/>
+                <Header />
                 <Body className='upc'>
-                    <CategoriesMosaic data={categories}/>
+                    {categories && categories.length > 0 && <CategoriesMosaic data={categories}/>}
                 </Body>
                 <Footer />
             </div>
@@ -36,8 +33,6 @@ class Home extends Component {
 }
 
 const mapStateToProps = store => ({
-    colorPalette: store.colorPalette,
-    companyInfo: store.company,
     categories: store.category.categories,
 });
 

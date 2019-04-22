@@ -1,8 +1,11 @@
 {
   "presets": [
-    "@babel/preset-react"
+    "@babel/preset-react",
+    "next/babel"
   ],
-  "plugins": [],
+  "plugins": [
+    ["styled-components", { "ssr": true }]
+  ],
   "env": {
     "cjs": {
       "presets": [

@@ -12,7 +12,7 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 pages: [ ...payload.data ],
-            }
+            };
         }
 
         default: {

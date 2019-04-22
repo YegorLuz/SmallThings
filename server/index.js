@@ -8,6 +8,7 @@ const fs = require('fs');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const nextConfig = require('./config.js');
+const useAuth = require('./useAuth');
 
 const routes = require('./routes');
 
@@ -66,8 +67,7 @@ app.prepare()
 
         server.get(`/manifest.json`, (req, res) => app.serveStatic(req, res, path.resolve('../client/assets/manifest.json')));
 
-        // server.use(intlReq())
-
+        server.use(useAuth);
         server.use(routes.getRequestHandler(app));
 
         server.get('*', (req, res) => handle(req, res));

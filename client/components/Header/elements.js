@@ -94,9 +94,7 @@ export const LogoImage = styled.img.attrs(({ src, alt }) => ({
   	animation-duration: 2.5s;
 `;
 
-export const LogoUnderline = styled.div.attrs(({ className }) => ({
-    className,
-}))`
+export const LogoUnderline = styled.div`
 	position: absolute;
 	height: 110px;
 	left: 0;

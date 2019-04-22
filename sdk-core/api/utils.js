@@ -41,3 +41,28 @@ export const createHttpError = (error = {}) => {
         canceled,
     });
 };
+
+String.prototype.replaceAll = function(search, replacement) {
+    const target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+
+export function serializeData (data = {}) {
+    const arr = [];
+    for (let key in data) {
+        if (data.hasOwnProperty(key)) {
+            arr.push((`${key}=${data[key]}`).replaceAll(';', '%3B'));
+        }
+    }
+    return arr.join(';');
+}
+
+export function parseSerializedData (str = '') {
+    console.log(str);
+    const arr = str.split(';');
+    return arr.reduce((acc, item) => {
+        const [key, value] = item.replaceAll('%3B', ';').split('=');
+        acc[key] = value;
+        return acc;
+    }, {});
+}

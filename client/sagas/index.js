@@ -1,13 +1,17 @@
-import { COMPANY_INFO, CATEGORIES, MENU, PRODUCTS, GET } from '../constants';
+import {PRODUCTS, USER, LOGIN, HOME, PAGE, INIT, GET, REHYDRATE, REGISTRATION, REGISTER} from '../constants';
 import { takeLatest } from 'redux-saga/effects';
-import { getCompanyInfo } from './company';
-import { getCategories } from './category';
-import { getMenu } from './menu';
 import { getProducts } from './product';
+import { login, register } from './user';
+import { rehydrate, initHomePage, initLoginPage } from './pages';
 
 export function* watcher () {
-    yield takeLatest(COMPANY_INFO + GET, getCompanyInfo);
-    yield takeLatest(CATEGORIES + GET, getCategories);
-    yield takeLatest(MENU + GET, getMenu);
+    yield takeLatest(HOME + PAGE + INIT, initHomePage);
+    yield takeLatest(LOGIN + PAGE + INIT, initLoginPage);
+    yield takeLatest(REGISTRATION + PAGE + INIT, initLoginPage);
+
     yield takeLatest(PRODUCTS + GET, getProducts);
+    yield takeLatest(USER + LOGIN, login);
+    yield takeLatest(USER + REGISTER, register);
+
+    yield takeLatest(REHYDRATE, rehydrate);
 }

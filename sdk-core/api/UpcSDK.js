@@ -1,27 +1,26 @@
 import axios from 'axios';
 import cookie from 'cookie';
-import { createHttpError, noCacheHeaders } from './utils';
+import { createHttpError, noCacheHeaders, serializeData, parseSerializedData } from './utils';
 
 import { Products, Product } from '../models/products';
 import { Company } from '../models/company';
 
 class UpcSDKClient {
-    constructor() {
-        this.axiosInstance = axios.create({
-            baseURL: 'http://localhost:3300/api',
-            timeout: 30000,
-            headers: {
-                'UPC-Api-Key': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1cGNfYXBpa2V5In0.3_jFK48gmheyO54a7VfiuFj0TtJccaOg33uC_8K4e7Q',
-            },
-            client: 'upc',
-        });
+    constructor(config) {
+        this.config = config;
+        this.axiosInstance = axios.create(config);
 
         this.createFetch = this.createFetch.bind(this);
         this.getProducts = this.getProducts.bind(this);
         this.getProduct = this.getProduct.bind(this);
         this.getCompanyInfo = this.getCompanyInfo.bind(this);
         this.getCategories = this.getCategories.bind(this);
-        this.getMenu = this.getMenu.bind(this);
+        this.getPages = this.getPages.bind(this);
+        this.loginUser = this.loginUser.bind(this);
+        this.registerUser = this.registerUser.bind(this);
+        this.saveToken = this.saveToken.bind(this);
+        this.initHomePage = this.initHomePage.bind(this);
+        this.initLoginPage = this.initLoginPage.bind(this);
     }
 
     createFetch({ url, cancelable = true, cacheable = false, Model, ...rest }) {
@@ -61,23 +60,22 @@ class UpcSDKClient {
         };
     }
 
-    static saveToken (access_token, refresh_token) {
+    saveToken ({ access_token, refresh_token }) {
         if (global.window && global.window.document) {
             const data = {
-                'max-age': 15,
+                'max-age': 15*60,
                 secure: false, //http, true = https
                 samesite: true,
                 access_token,
                 refresh_token,
             };
-            global.window.document.cookie = cookie.serialize('token', data);
+            global.window.document.cookie = cookie.serialize('token', serializeData(data));
         }
     }
 
     static getToken () {
         if (global.window && global.window.document) {
-            const {token} = cookie.parse(global.window.document.cookie);
-            const {access_token = '', refresh_token = ''} = token || {};
+            const { access_token, refresh_token } = cookie.parse(global.window.document.cookie);
             return {access_token, refresh_token};
         }
         return {};
@@ -128,6 +126,42 @@ class UpcSDKClient {
         });
         return endpoint(payload);
     }
+
+    loginUser (payload) {
+        const endpoint = this.createFetch({
+            url: `/auth`,
+            method: 'POST',
+            // Model: Categories,
+        });
+        return endpoint(payload);
+    }
+
+    registerUser (payload) {
+        const endpoint = this.createFetch({
+            url: `/registration`,
+            method: 'POST',
+            // Model: Categories,
+        });
+        return endpoint(payload);
+    }
+
+    initHomePage (payload) {
+        const endpoint = this.createFetch({
+            url: `/home-page`,
+            method: 'GET',
+            // Model: Categories,
+        });
+        return endpoint(payload);
+    }
+
+    initLoginPage (payload) {
+        const endpoint = this.createFetch({
+            url: `/login-page`,
+            method: 'GET',
+            // Model: Categories,
+        });
+        return endpoint(payload);
+    }
 }
 
-export default { UpcSDKClient };
+export default UpcSDKClient;

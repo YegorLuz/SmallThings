@@ -1,52 +1,30 @@
-const CryptoJS = require('crypto-js');
 const moment = require('moment');
-const { base64url_encode, base64url_decode, shallowEquality, isAuthorized, forbid } = require('../utils');
-const { TOKEN_LIFE_TIME, TOKEN_SECRET, TOKEN_HEADER } = require('../constants');
+const { shallowEquality, forbid, parseAuthHeaders, parseToken } = require('../utils');
+const { TOKEN_HEADER, UPC_API_KEY, AVAILABLE_URIS, UPC_SIMPLE_ACCESS_KEY } = require('../constants');
 
-const urlsRequireAuth = [
-    '/product'
-];
+function accessAllowed (request) {
+    const { originalUrl } = request;
+    const { simpleAccessKey } = parseAuthHeaders(request);
 
-function createToken (userData) {
-    const data = {
-        ...userData,
-        expirationDate: moment() + TOKEN_LIFE_TIME,
-    };
-
-    let header_str = CryptoJS.enc.Utf8.parse(JSON.stringify(TOKEN_HEADER));
-    let header_enc = base64url_encode(header_str);
-
-    let data_str = CryptoJS.enc.Utf8.parse(JSON.stringify(data));
-    let data_enc = base64url_encode(data_str);
-
-    let token = header_enc + '.' + data_enc;
-
-    token = CryptoJS.AES.encrypt(token, TOKEN_SECRET).toString();
-
-    return token;
+    return simpleAccessKey === UPC_SIMPLE_ACCESS_KEY && AVAILABLE_URIS.indexOf(originalUrl) >= 0;
 }
 
-function parseToken (tk) {
-    const token = CryptoJS.AES.decrypt(tk, TOKEN_SECRET).toString(CryptoJS.enc.Utf8);
-
-    let [ header_enc, data_enc ] = token.split('.');
-
-    let data_str = base64url_decode(data_enc);
-    let t_data = JSON.parse(data_str.toString(CryptoJS.enc.Utf8));
-
-    let header_str = base64url_decode(header_enc);
-    let t_header = JSON.parse(header_str.toString(CryptoJS.enc.Utf8));
-
-    return { data: t_data, header: t_header };
+async function isClientAuthorized (request, response, getUser) {
+    const { access_token } = parseAuthHeaders(request);
+    return await isValidToken(access_token, getUser);
 }
 
-function isValidToken (token, getUser) {
+function isServerAuthorized (upcApiKey) {
+    return upcApiKey === UPC_API_KEY;
+}
+
+async function isValidToken (token, getUser) {
     const { data, header } = parseToken(token);
     if (shallowEquality(header, TOKEN_HEADER)) {
-        const { id, login, password, expirationDate } = data;
-        const userData = getUser(id);
-        if (userData.login === login && userData.password === password) {
-            if (moment() < expirationDate) {
+        const { id, email, password, expirationDate } = data;
+        if (moment() < moment(expirationDate)) {
+            const userData = await getUser(id);
+            if (userData[0].email === email && userData[0].password === password) {
                 return true;
             }
         }
@@ -56,51 +34,32 @@ function isValidToken (token, getUser) {
 }
 
 function useAuth (DataBase) {
-    return function (request, response, next) {
-        const { method, originalUrl, data, headers } = request;
-        const token = headers['UPC-AUTH-TOKEN'] || '';
+    return async function (request, response, next) {
+        const { upcApiKey, access_token } = parseAuthHeaders(request);
 
-        if (!isAuthorized(request)) {
-            forbid(response);
-        }
-
-        if (method === 'POST' && originalUrl === '/api/auth') {
-            const { login, password } = data;
-            DataBase.getUserByCreds(login, password)
-                .then(userData => {
-                    const { _id, firstName, lastName, email } = userData;
-                    if (_id) {
-                        const token = createToken({id: _id, login, password});
-                        response.send({_id, firstName, lastName, email, token});
-                        next();
-                    } else {
-                        forbid(response);
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                    forbid(response);
-                });
-        }
-
-        if (method === 'POST' && originalUrl === '/api/registration') {
-            const { login, password, email, firstName = '', lastName = '' } = data;
-            DataBase.addUser({ login, password, email, firstName, lastName })
-                .then(userData => {
-                    console.log(userData);
-                    response.send(userData);
-                    next();
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        }
-
-        if (token.length) {
-            if (isValidToken(token)) {
-                next();
+        if (upcApiKey) {
+            if (!isServerAuthorized(upcApiKey)) {
+                forbid(request, response);
             } else {
-                response.status(402).end({ message: 'Auth Token has been expired...' });
+                if (access_token) {
+                    let authorized = await isClientAuthorized(request, response, DataBase.getUser);
+
+                    if (authorized) {
+                        request.body.loggedIn = true;
+                    }
+                }
+            }
+        } else {
+            if (!accessAllowed(request)) {
+                if (access_token) {
+                    let authorized = await isClientAuthorized(request, response, DataBase.getUser);
+
+                    if (!authorized) {
+                        forbid(request, response);
+                    }
+                } else {
+                    forbid(request, response);
+                }
             }
         }
 

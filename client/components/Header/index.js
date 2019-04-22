@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser';
 import { Container } from '../common/elements';
 import {
@@ -23,12 +24,39 @@ import Icon from '../Icon';
 import Selector from '../Selector';
 
 class Header extends Component {
+    constructor (props) {
+        super(props);
+
+        this.renderUser = this.renderUser.bind(this);
+    }
+
+    renderUser () {
+        const { userData = {}, colorPalette: { primary : { main } }, loggedIn } = this.props;
+
+        if (loggedIn && userData.email) {
+            return (
+                <Fragment>
+                    <Greeting>Hello, {userData.firstName}!</Greeting>
+                    <Icon className='fa-user' styles={{ color: main, fontSize: '18px' }}/>
+                </Fragment>
+            );
+        }
+
+        return <a href={'/login'}>Login</a>;
+    }
+
     render () {
-        const { colorPalette: { primary : { main } }, companyInfo: { name, slogan, logo } } = this.props;
+        const {
+            companyInfo: {
+                name,
+                slogan,
+                logo,
+            },
+        } = this.props;
 
         return (
             <HeaderContainer>
-                <Container>
+                <Container padding={'20px 0 0'}>
                     <InnerContainer>
                         <CompanyContainer href='/'>
                             <LogoWrapper>
@@ -47,8 +75,7 @@ class Header extends Component {
                                 <SearchInput placeholder='Search...' />
                             </Search>
                             <User>
-                                <Greeting>Hello, guest!</Greeting>
-                                <Icon className='fa-user' styles={{ color: main, fontSize: '18px' }}/>
+                                {this.renderUser()}
                             </User>
                         </Right>
                     </InnerContainer>
@@ -60,13 +87,27 @@ class Header extends Component {
 }
 
 Header.defaultProps = {
+    userData: {},
     onSelect: () => null,
 };
 
 Header.propTypes = {
     colorPalette: PropTypes.object.isRequired,
     companyInfo: PropTypes.object.isRequired,
+    userData: PropTypes.object.isRequired,
+    loggedIn: PropTypes.bool.isRequired,
     onSelect: PropTypes.func,
 };
 
-export default Header;
+const mapStateToProps = store => ({
+    colorPalette: store.colorPalette,
+    companyInfo: store.company,
+    userData: store.user.userData,
+    loggedIn: store.user.loggedIn,
+});
+
+const mapDispatchToProps = dispatch => ({
+
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
