@@ -9,7 +9,6 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const nextConfig = require('./config.js');
 const useAuth = require('./useAuth');
-
 const routes = require('./routes');
 
 dotenv.config();
@@ -44,7 +43,6 @@ app.prepare()
         const server = express();
 
         server.use('/assets', express.static('./client/assets'));
-
         server.use(cookieParser());
 
         if (isProd) {
@@ -67,8 +65,13 @@ app.prepare()
 
         server.get(`/manifest.json`, (req, res) => app.serveStatic(req, res, path.resolve('../client/assets/manifest.json')));
 
-        server.use(useAuth);
-        server.use(routes.getRequestHandler(app));
+        //server.use(useAuth);
+
+        routes.forEach(({ reqUrl, destPath }) => {
+            server.get(reqUrl, (req, res) => {
+                return app.render(req, res, destPath, req.params);
+            });
+        });
 
         server.get('*', (req, res) => handle(req, res));
 

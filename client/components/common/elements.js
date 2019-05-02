@@ -21,7 +21,6 @@ export const Container = styled.div.attrs(({ padding = null }) => ({
     margin: 0 auto;
     ${props => props.padding ? `padding: ${props.padding};` : ''}
 	position: relative;
-	overflow: hidden;
 `;
 
 export const Form = styled.div`

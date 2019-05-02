@@ -1,7 +1,8 @@
-import { CATEGORIES, SAVE } from '../constants';
+import {CATEGORIES, CATEGORY, SAVE} from '../constants';
 
 const defaultState = {
     categories: [],
+    categoryId: '',
 };
 
 export default (state = defaultState, action) => {
@@ -23,6 +24,13 @@ export default (state = defaultState, action) => {
             return {
                 ...state,
                 categories,
+            };
+        }
+
+        case CATEGORY + SAVE: {
+            return {
+                ...state,
+                categoryId: payload.categoryId,
             };
         }
 

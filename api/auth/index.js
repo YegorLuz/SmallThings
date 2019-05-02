@@ -37,6 +37,8 @@ function useAuth (DataBase) {
     return async function (request, response, next) {
         const { upcApiKey, access_token } = parseAuthHeaders(request);
 
+
+        /*
         if (upcApiKey) {
             if (!isServerAuthorized(upcApiKey)) {
                 forbid(request, response);
@@ -62,6 +64,7 @@ function useAuth (DataBase) {
                 }
             }
         }
+        */
 
         next();
     }

@@ -1,4 +1,4 @@
-import { HOME, LOGIN, REGISTRATION, PAGE, INIT, REHYDRATE } from '../constants';
+import {HOME, LOGIN, REGISTRATION, PAGE, INIT, REHYDRATE, CATEGORY} from '../constants';
 
 export function rehydrate () {
     return {
@@ -21,5 +21,14 @@ export function initLoginPage () {
 export function initRegistrationPage () {
     return {
         type: REGISTRATION + PAGE + INIT,
+    };
+}
+
+export function initCategoryPage (params) {
+    return {
+        type: CATEGORY + PAGE + INIT,
+        payload: {
+            params,
+        },
     };
 }

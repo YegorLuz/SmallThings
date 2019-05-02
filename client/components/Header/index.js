@@ -19,15 +19,22 @@ import {
     SearchInput,
     User,
     Greeting,
+    LogOutBtn,
 } from './elements';
 import Icon from '../Icon';
 import Selector from '../Selector';
+import { logOut, ping } from '../../actions/user';
 
 class Header extends Component {
     constructor (props) {
         super(props);
 
         this.renderUser = this.renderUser.bind(this);
+        this.logOutHandler = this.logOutHandler.bind(this);
+    }
+
+    componentDidMount () {
+        //this.props.ping();
     }
 
     renderUser () {
@@ -38,11 +45,16 @@ class Header extends Component {
                 <Fragment>
                     <Greeting>Hello, {userData.firstName}!</Greeting>
                     <Icon className='fa-user' styles={{ color: main, fontSize: '18px' }}/>
+                    <LogOutBtn onClick={this.logOutHandler}>Log out</LogOutBtn>
                 </Fragment>
             );
         }
 
         return <a href={'/login'}>Login</a>;
+    }
+
+    logOutHandler () {
+        this.props.logOut();
     }
 
     render () {
@@ -97,6 +109,7 @@ Header.propTypes = {
     userData: PropTypes.object.isRequired,
     loggedIn: PropTypes.bool.isRequired,
     onSelect: PropTypes.func,
+    logOut: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = store => ({
@@ -107,7 +120,8 @@ const mapStateToProps = store => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-
+    logOut: () => dispatch(logOut()),
+    ping: () => dispatch(ping()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

@@ -1,4 +1,4 @@
-import { USER, LOGIN, SUCCESS, FAIL, LOGGED_IN, SAVE } from '../constants';
+import {USER, LOGIN, SUCCESS, FAIL, LOGGED_IN, SAVE, DATA, LOG_OUT} from '../constants';
 
 const defaultState = {
     userData: {},
@@ -25,10 +25,24 @@ export default (state = defaultState, action) => {
             };
         }
 
+        case USER + DATA + SAVE: {
+            return {
+                ...state,
+                userData: { ...payload.userData },
+            };
+        }
+
         case USER + LOGGED_IN + SAVE: {
             return {
                 ...state,
                 loggedIn: payload.loggedIn,
+            };
+        }
+
+        case USER + LOG_OUT + SAVE: {
+            return {
+                userData: {},
+                loggedIn: false,
             };
         }
 

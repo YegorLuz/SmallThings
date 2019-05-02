@@ -12,8 +12,8 @@ const productSchema = new Schema({
     description: String,
     price: Number,
     options: Options,
-    categoryId: { type: ObjectId, ref: 'Category' },
-    storeId: { type: ObjectId, ref: 'Store' },
+    category: { type: ObjectId, ref: 'Category' },
+    store: { type: ObjectId, ref: 'Store' },
 }, { collection: 'Products' });
 
 // we need to create a model using it

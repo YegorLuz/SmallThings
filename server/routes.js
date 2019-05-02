@@ -1,7 +1,20 @@
-const routes = require('next-routes')();
-
-routes.add('products', 'products/:id', 'products');
-routes.add('store', 'store/:storeId/:category', 'store');
-routes.add('catalog', 'catalog/:category', 'catalog');
+const routes = [
+    {
+        reqUrl: '/store/:storeId',
+        destPath: '/store',
+    },
+    {
+        reqUrl: '/store/:storeId/category/:categoryId',
+        destPath: '/category',
+    },
+    {
+        reqUrl: '/category/:categoryId',
+        destPath: '/category',
+    },
+    {
+        reqUrl: '/category/:categoryId/product/:productId',
+        destPath: '/product',
+    }
+];
 
 module.exports = routes;

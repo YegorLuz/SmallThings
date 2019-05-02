@@ -1,4 +1,4 @@
-import { USER, LOGIN, SUCCESS, FAIL, LOGGED_IN, SAVE, REGISTER } from '../constants';
+import {USER, DATA, LOGIN, SUCCESS, FAIL, LOGGED_IN, SAVE, REGISTER, LOG_OUT, PING} from '../constants';
 
 export function login (data = {}) {
     return {
@@ -9,7 +9,7 @@ export function login (data = {}) {
     };
 }
 
-export function saveUserData (userData) {
+export function loginSuccess (userData) {
     return {
         type: USER + LOGIN + SUCCESS,
         payload: {
@@ -21,6 +21,27 @@ export function saveUserData (userData) {
 export function loginFail () {
     return {
         type: USER + LOGIN + FAIL,
+    };
+}
+
+export function logOut () {
+    return {
+        type: USER + LOG_OUT,
+    };
+}
+
+export function logOutUser () {
+    return {
+        type: USER + LOG_OUT + SAVE,
+    };
+}
+
+export function saveUserData (userData) {
+    return {
+        type: USER + DATA + SAVE,
+        payload: {
+            userData,
+        },
     };
 }
 
@@ -39,5 +60,11 @@ export function registerUser (data) {
         payload: {
             data,
         },
+    };
+}
+
+export function ping () {
+    return {
+        type: USER + PING,
     };
 }

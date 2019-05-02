@@ -7,25 +7,27 @@ const authHandler = function (DataBase) {
         if (forbidden) return;
 
         const { token } = body || {};
-        const { email, password } = decryptData(token);
+        const { email: tEmail, password } = decryptData(token);
 
-        const userData = await DataBase.getUserByCreds(email, password);
-        console.log('authHandler -> userData', userData);
-
-        DataBase.getUserByCreds(email, password)
-            .then(userData => {
-                const { _id, firstName, lastName, image, email } = userData[0];
-                if (_id) {
-                    const access_token = createToken({ id: _id, email, password });
-                    const refresh_token = createToken({ access_token, type: 'refresh' });
-                    response.send({ userData: { _id, firstName, lastName, email, image, access_token, refresh_token } });
-                } else {
-                    forbid(request, response);
-                }
-            })
-            .catch(error => {
+        try {
+            const userData = await DataBase.getUserByCreds(tEmail, password);
+            const {_id, firstName, lastName, image, email} = userData[0];
+            if (_id) {
+                const access_token = createToken({id: _id, email, password});
+                const refresh_token = createToken({access_token, type: 'refresh'});
+                response.send({userData: {_id, firstName, lastName, email, image, access_token, refresh_token}});
+            } else {
                 forbid(request, response);
-            });
+            }
+        } catch (error) {
+            forbid(request, response);
+        }
+    };
+};
+
+const pingHandler = function (DataBase) {
+    return async function (request, response) {
+        response.send({ loggedIn: request.body.loggedIn || false });
     };
 };
 
@@ -38,14 +40,13 @@ const registrationHandler = function (DataBase) {
         const { password, email, firstName = '', lastName = '' } = data;
         console.log(data);
         return;
-        DataBase.addUser({ password, email, firstName, lastName })
-            .then(userData => {
-                response.send(userData);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        try {
+            const userData = await DataBase.addUser({password, email, firstName, lastName});
+            response.send({ userData });
+        } catch (error) {
+            console.log(error);
+        }
     };
 };
 
-module.exports = { authHandler, registrationHandler };
+module.exports = { authHandler, pingHandler, registrationHandler };

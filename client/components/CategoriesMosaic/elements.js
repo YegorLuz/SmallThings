@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+export const Wrapper = styled.div`
+    overflow: hidden;
+`;
+
 export const Table = styled.table`
     width: calc(100% + 20px);
     border-collapse: separate;
@@ -21,7 +25,7 @@ export const Cell = styled.td.attrs(({ bgImage }) => ({
     cursor: pointer;
 `;
 
-export const ContentContainer = styled.div`
+export const ContentContainer = styled.a`
     height: 100%;
     width: 100%;
     display: flex;

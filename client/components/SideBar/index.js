@@ -1,42 +1,19 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Aside, List, Item, A } from './elements';
-
-const categoryTestData = [
-    {
-        _id: '1',
-        url: 'cat1',
-        title: 'Category 1',
-    },
-    {
-        _id: '2',
-        url: 'cat2',
-        title: 'Category 2',
-    },
-    {
-        _id: '3',
-        url: 'cat3',
-        title: 'Category 3',
-    },
-    {
-        _id: '4',
-        url: 'cat4',
-        title: 'Category 4',
-    },
-    {
-        _id: '5',
-        url: 'cat5',
-        title: 'Category 5',
-    },
-];
 
 class SideBar extends Component {
     render () {
+        const { categories, storeId, categoryId } = this.props;
+        const cats = categories.reduce((acc, item) => acc.concat(item), []);
+
         return (
             <Aside>
                 <List>
-                    {categoryTestData.map(item => (
-                        <Item key={item._id}>
-                            <A href={item.url}>{item.title}</A>
+                    {cats.map(item => (
+                        <Item key={item._id} active={item._id === categoryId}>
+                            <A href={`${storeId ? `/store/${storeId}` : ''}/category/${item._id}`}>{item.title}</A>
                         </Item>
                     ))}
                 </List>
@@ -45,4 +22,24 @@ class SideBar extends Component {
     }
 }
 
-export default SideBar;
+SideBar.defaultProps = {
+    storeId: '',
+    categoryId: '',
+    categories: [],
+};
+
+SideBar.propTypes = {
+    categories: PropTypes.array,
+    storeId: PropTypes.string,
+    categoryId: PropTypes.string,
+};
+
+const mapStateToProps = store => ({
+    categoryId: store.category.categoryId,
+    categories: store.category.categories,
+    storeId: store.company._id,
+});
+
+const mapDispatchToProps = dispatch => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SideBar);

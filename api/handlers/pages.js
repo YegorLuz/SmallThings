@@ -67,4 +67,33 @@ const registrationPageHandler = function (DataBase) {
     };
 };
 
-module.exports = { homePageHandler, loginPageHandler, registrationPageHandler };
+const categoryPageHandler = function (DataBase) {
+    return async function (request, response) {
+        const { customerId = null, storeId = null, categoryId = null } = request.body || {};
+        const prodParams = {};
+        const catParams = {};
+        let colors = colorPalette.index;
+
+        try {
+            if (customerId !== null) {
+                colors = colorPalette[customerId];
+            }
+
+            if (storeId) {
+                catParams.store = storeId;
+                prodParams.store = storeId;
+            }
+
+            if (categoryId) prodParams.category = categoryId;
+
+            const categories = await DataBase.getCategories(catParams);
+            const products = await DataBase.getProducts(prodParams);
+
+            response.send(withLoggedIn({ colorPalette: colors, companyInfo, categories, products }, request));
+        } catch (error) {
+            response.status(404).end(error);
+        }
+    };
+};
+
+module.exports = { homePageHandler, loginPageHandler, registrationPageHandler, categoryPageHandler };

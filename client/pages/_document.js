@@ -8,7 +8,6 @@ class MyDocument extends Document {
         const sheet = new ServerStyleSheet();
         const {
             renderPage: originalRenderPage,
-            req: { locale },
         } = ctx;
 
         try {
@@ -19,7 +18,6 @@ class MyDocument extends Document {
 
             const initialProps = await Document.getInitialProps(ctx);
             return {
-                locale,
                 ...initialProps,
                 styles: (
                     <>

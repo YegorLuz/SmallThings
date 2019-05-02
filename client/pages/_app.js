@@ -1,13 +1,11 @@
 import React from 'react';
 import {Provider} from 'react-redux';
 import App, {Container} from 'next/app';
-import {withReduxSaga} from '../store/';
+import { withReduxSaga } from '../store/';
 import { rehydrate } from '../actions/pages';
 
 class AppRoot extends App {
-    static async getInitialProps({Component, ctx, router: {query}}) {
-        const userAgent = ctx.req ? ctx.req.headers['user-agent'] : navigator.userAgent;
-
+    static async getInitialProps({ Component, ctx }) {
         let pageProps = {};
         if (Component.getInitialProps) {
             try {
@@ -19,8 +17,6 @@ class AppRoot extends App {
 
         return {
             pageProps,
-            statusCode: ctx.res && ctx.res.statusCode,
-            userAgent,
         };
     }
 
@@ -30,7 +26,7 @@ class AppRoot extends App {
     }
 
     render() {
-        const {Component: Page, store, pageProps, userAgent} = this.props;
+        const { Component: Page, store, pageProps } = this.props;
 
         return (
             <Container>

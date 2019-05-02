@@ -12,6 +12,7 @@ export const PRODUCTS = 'PRODUCTS';
 export const USER = 'USER';
 export const HOME = 'HOME';
 export const REGISTRATION = 'REGISTRATION';
+export const CATEGORY = 'CATEGORY';
 
 export const GET = '_GET';
 export const SAVE = '_SAVE';
@@ -20,7 +21,10 @@ export const LOGOUT = '_LOGOUT';
 export const REGISTER = '_REGISTER';
 export const INIT = '_INIT';
 export const LOGGED_IN = '_LOGGED_IN';
+export const LOG_OUT = '_LOG_OUT';
+export const PING = '_PING';
 
+export const DATA = '_DATA';
 export const PAGE = '_PAGE';
 export const SUCCESS = '_SUCCESS';
 export const FAIL = '_FAIL';

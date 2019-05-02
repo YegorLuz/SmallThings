@@ -36,7 +36,16 @@ class DataBase {
 
     /** ----- CATEGORIES ----- */
     static async getCategories (params = {}) {
-        return Category.find(params);
+        const { store, _id = null } = params;
+        if (!!store && !_id) {
+            return Product.find({ store }).populate('category').exec((err, prod) => prod.category);
+        }
+
+        if (_id) {
+            return Category.find({ _id });
+        }
+
+        return Category.find({});
     }
 
     static async getCategory (_id) {

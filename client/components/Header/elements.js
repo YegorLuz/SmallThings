@@ -48,6 +48,8 @@ const logoUnderlineAnim = keyframes`
 export const HeaderContainer = styled.header`
     height: 110px;
     border-top: 5px solid #1769aa;
+    position: relative;
+    z-index: 5;
 `;
 
 export const InnerContainer = styled.div`
@@ -167,4 +169,9 @@ export const Greeting = styled.div`
 
 export const Icon = styled.div`
 
+`;
+
+export const LogOutBtn = styled.div`
+    color: #666;
+    cursor: pointer;
 `;
